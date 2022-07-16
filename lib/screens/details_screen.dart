@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:movies_app/models/cast_model.dart';
 import 'package:movies_app/models/movie_model.dart';
 
 import '../widgets/casting_cards.dart';
@@ -12,9 +11,7 @@ class DetailHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    final Movie movie = arguments['movie'];
-    final List<Cast> casts = arguments['casts'];
+    final Movie movie  = ModalRoute.of(context)!.settings.arguments as Movie;
 
     return Scaffold(
       body: CustomScrollView(
@@ -25,7 +22,7 @@ class DetailHomeScreen extends StatelessWidget {
            delegate: SliverChildListDelegate([
             _PosterAndTitle(movie: movie),
             _Overview( movie: movie),
-            CastingCards(casts:casts)
+            CastingCards(movieId: movie.id)
            ]),
           )
           
@@ -75,12 +72,15 @@ class _PosterAndTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-              placeholder: const AssetImage('assets/no-image.jpg'),
-              image: NetworkImage(movie.fullPosterImg),
-              height: 150,
+          Hero(
+            tag: movie.heroId!,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage('assets/no-image.jpg'),
+                image: NetworkImage(movie.fullPosterImg),
+                height: 150,
+              ),
             ),
           ),
           
@@ -99,6 +99,7 @@ class _PosterAndTitle extends StatelessWidget {
                 Text(
                   movie.originalTitle, 
                   style: textTheme.subtitle1, 
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis, 
                 ),
                 
@@ -139,7 +140,7 @@ class _CustomAppBar extends StatelessWidget {
         title: Container(
           width: double.infinity, 
           alignment: Alignment.bottomCenter,
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
           color: Colors.black12,
           child: Text(
             movie.title,

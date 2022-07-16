@@ -97,6 +97,9 @@ class _MoviePoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    movie.heroId = 'slider-${movie.id}';
+
     return Container(
       width: 130,
       height: 190,
@@ -104,21 +107,18 @@ class _MoviePoster extends StatelessWidget {
       child: Column(
         children:  [
           GestureDetector(
-            onTap: () async {
-              final movieProvider = Provider.of<MovieProvider>(context, listen: false);
-              List<Cast> casts = await movieProvider.getCastByMovieId(movie.id) ?? []; 
-              // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, 'details', arguments: {"movie": movie, "casts" : casts});
-            },
-            //  onTap: () => Navigator.pushNamed(context, 'details', arguments: movie),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: FadeInImage(
-                placeholder: const AssetImage('assets/no-image.jpg'), 
-                image: NetworkImage(movie.fullPosterImg),
-                width: 130,
-                height: 190,
-                fit: BoxFit.cover,
+            onTap: () => Navigator.pushNamed(context, 'details', arguments: movie),
+            child: Hero(
+              tag: movie.heroId!,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FadeInImage(
+                  placeholder: const AssetImage('assets/no-image.jpg'), 
+                  image: NetworkImage(movie.fullPosterImg),
+                  width: 130,
+                  height: 190,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
